@@ -18,27 +18,8 @@ fn parse_line(ln: &str) -> (u8, i32) {
     (ln.as_bytes()[0], num)
 }
 
-#[derive(Clone, Copy, Debug)]
-enum Direction {
-    East = 0,
-    South = 1,
-    West = 2,
-    North = 3,
-}
-
 fn move_pos(pos: Pos, waypoint: Pos, scale: i32) -> Pos {
     (pos.0 + waypoint.0 * scale, pos.1 + waypoint.1 * scale)
-}
-
-fn forward(pos: Pos, num: i32, dir: Direction) -> Pos {
-    let amount = match dir {
-        Direction::North => (0, -num),
-        Direction::South => (0, num),
-        Direction::West => (-num, 0),
-        Direction::East => (num, 0),
-    };
-
-    move_pos(pos, amount, 1)
 }
 
 fn rotate(waypoint: Pos, steps: i32, clockwise: i32) -> Pos {
@@ -53,63 +34,39 @@ fn rotate(waypoint: Pos, steps: i32, clockwise: i32) -> Pos {
     }
 
     (x, y)
+}
 
-    // let new_dir = match j % 4 {
-    //     0 => Direction::East,
-    //     1 => Direction::South,
-    //     2 => Direction::West,
-    //     3 => Direction::North,
-    //     _ => panic!("oh noes"),
-    // };
-    // println!("{:?}", new_dir);
-    // new_dir
+fn one_step(pos: Pos, waypoint: Pos, i: u8, num: i32) -> (Pos, Pos) {
+    let result = match i {
+        N => (pos, move_pos(waypoint, (0, -num), 1)),
+        S => (pos, move_pos(waypoint, (0, num), 1)),
+        W => (pos, move_pos(waypoint, (-num, 0), 1)),
+        E => (pos, move_pos(waypoint, (num, 0), 1)),
+        F => (move_pos(pos, waypoint, num), waypoint),
+        R => (pos, rotate(waypoint, num / 90, -1)),
+        L => (pos, rotate(waypoint, num / 90, 1)),
+        _ => panic!("unknown instruction {instr}", instr = i),
+    };
+    println!("pos={:?} waypoint={:?}", result.0, result.1);
+    result
 }
 
 fn main() {
     let contents = fs::read_to_string("day12.txt").expect("Something went wrong reading the file");
-//     let contents = "F10
-// N3
-// F7
-// R90
-// F11";
-
     let instr: Vec<(u8, i32)> = contents.lines().map(parse_line).collect();
 
-    // let mut dir: Direction = Direction::East;
+    let init_waypoint: Pos = (10, -1);
+    let init_pos: (i32, i32) = (0, 0);
 
-    let mut waypoint: Pos = (10, -1);
-    let mut pos: (i32, i32) = (0, 0);
+    println!("start: pos={:?} waypoint={:?}", init_pos, init_waypoint);
 
-    println!("start: pos={:?} waypoint={:?}", pos, waypoint);
+    let init_pos: (i32, i32) = (0, 0);
 
-    for (i, num) in instr {
-        println!("{} {}", i, num);
-        match i {
-            N => {
-                waypoint = move_pos(waypoint, (0, -num), 1);
-            }
-            S => {
-                waypoint = move_pos(waypoint, (0, num), 1);
-            }
-            W => {
-                waypoint = move_pos(waypoint, (-num, 0), 1);
-            }
-            E => {
-                waypoint = move_pos(waypoint, (num, 0), 1);
-            }
-            F => {
-                pos = move_pos(pos, waypoint, num);
-            }
-            R => {
-                waypoint = rotate(waypoint, num / 90, -1);
-            }
-            L => {
-                waypoint = rotate(waypoint, num / 90, 1);
-            }
-            _ => panic!("unknown instruction {instr}", instr = i),
-        }
-        println!("pos={:?} waypoint={:?}", pos, waypoint);
-    }
+    let (pos, _) = instr
+        .iter()
+        .fold((init_pos, init_waypoint), |(pos, waypoint), (i, num)| {
+            one_step(pos, waypoint, *i, *num)
+        });
 
     println!(
         "{}x{} = manhattan {}",
