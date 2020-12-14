@@ -22,7 +22,7 @@ impl Map {
             vec: map
                 .vec
                 .iter()
-                .map(|row| row.iter().map(|c| cell).collect())
+                .map(|row| row.iter().map(|_| cell).collect())
                 .collect(),
         }
     }
@@ -58,7 +58,7 @@ impl Map {
         self.iter_pos().zip(self.iter_cells())
     }
 
-    fn iter_pos<'a>(&'a self) -> impl Iterator<Item = Pos> + '_ {
+    fn iter_pos(&self) -> impl Iterator<Item = Pos> + '_ {
         (0..self.vec.len())
             .flat_map(move |row| (0..self.vec[0].len()).map(move |col| (col as i32, row as i32)))
     }
