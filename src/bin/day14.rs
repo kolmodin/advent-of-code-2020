@@ -19,10 +19,10 @@ fn parse_line(ln: &str) -> Instr {
 
     // mem[20727] = 25071621
     let parts: Vec<_> = ln.split(" = ").collect();
-    return Instr::Write {
+    Instr::Write {
         addr: parts[0][4..parts[0].len() - 1].parse().unwrap(),
         val: parts[1].parse().unwrap(),
-    };
+    }
 }
 
 fn solve_part1(instrs: &[Instr]) -> i64 {
@@ -38,8 +38,8 @@ fn solve_part1(instrs: &[Instr]) -> i64 {
                     .chars()
                     .rev()
                     .enumerate()
-                    .filter(|(i, c)| *c == '1')
-                    .map(|(i, c)| 2_i64.pow(i as u32))
+                    .filter(|(_i, c)| *c == '1')
+                    .map(|(i, _c)| 2_i64.pow(i as u32))
                     .sum();
                 let clear_mask: i64 = mask
                     .chars()

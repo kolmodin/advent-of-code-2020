@@ -3,7 +3,7 @@ use std::fs;
 use std::iter::successors;
 use std::str::from_utf8;
 
-fn evolve(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
+fn evolve(map: &[Vec<u8>]) -> Vec<Vec<u8>> {
     let mut new_map: Vec<Vec<u8>> = Vec::new();
     let maphs: HashMap<(i32, i32), u8> = {
         let mut new = HashMap::<(i32, i32), u8>::new();
@@ -54,14 +54,14 @@ fn evolve(map: &Vec<Vec<u8>>) -> Vec<Vec<u8>> {
     new_map
 }
 
-fn print_map(map: &Vec<Vec<u8>>) {
+fn print_map(map: &[Vec<u8>]) {
     println!("----");
     for row in map {
         println!("{}", from_utf8(row).unwrap());
     }
 }
 
-fn map_eq(map1: &Vec<Vec<u8>>, map2: &Vec<Vec<u8>>) -> bool {
+fn map_eq(map1: &[Vec<u8>], map2: &[Vec<u8>]) -> bool {
     for (y, row) in map1.iter().enumerate() {
         for (x, c) in row.iter().enumerate() {
             if map2.get(y).map(|row2| row2.get(x)).flatten() != Some(c) {
