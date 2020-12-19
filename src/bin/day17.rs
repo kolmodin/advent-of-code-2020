@@ -1,15 +1,80 @@
+
 use std::fs;
 
+use std::collections::HashMap;
 use std::collections::HashSet;
 
-use std::cmp::max;
-use std::cmp::min;
+use std::hash::Hash;
 
-type Pos = (i32, i32, i32, i32);
+use itertools::iproduct;
 
-type Map = HashSet<Pos>;
+type NeighborCount<P> = HashMap<P, i32>;
+type Alive<P> = HashSet<P>;
 
-fn to_map(input: &str) -> Map {
+trait PosT
+where
+    Self: Sized + Eq + Hash + Clone,
+{
+    fn new(x: i32, y: i32) -> Self;
+    fn add_neighbors(&self, counter: &mut NeighborCount<Self>);
+}
+
+#[derive(Eq, PartialEq, Hash, Clone)]
+struct Pos3 {
+    x: i32,
+    y: i32,
+    z: i32,
+}
+
+impl PosT for Pos3 {
+    fn new(x: i32, y: i32) -> Pos3 {
+        Pos3 { x, y, z: 0 }
+    }
+    fn add_neighbors(&self, counter: &mut NeighborCount<Pos3>) {
+        for (x, y, z) in iproduct!(-1..=1, -1..=1, -1..=1) {
+            if x == 0 && y == 0 && z == 0 {
+                continue;
+            }
+            let p = Pos3 {
+                x: self.x + x,
+                y: self.y + y,
+                z: self.z + z,
+            };
+            let entry = counter.entry(p).or_insert(0);
+            *entry += 1;
+        }
+    }
+}
+#[derive(Eq, PartialEq, Hash, Clone)]
+struct Pos4 {
+    x: i32,
+    y: i32,
+    z: i32,
+    w: i32,
+}
+
+impl PosT for Pos4 {
+    fn new(x: i32, y: i32) -> Pos4 {
+        Pos4 { x, y, z: 0, w: 0 }
+    }
+    fn add_neighbors(&self, counter: &mut NeighborCount<Pos4>) {
+        for (x, y, z, w) in iproduct!(-1..=1, -1..=1, -1..=1, -1..=1) {
+            if x == 0 && y == 0 && z == 0 && w == 0 {
+                continue;
+            }
+            let p = Pos4 {
+                x: self.x + x,
+                y: self.y + y,
+                z: self.z + z,
+                w: self.w + w,
+            };
+            let entry = counter.entry(p).or_insert(0);
+            *entry += 1;
+        }
+    }
+}
+
+fn map_to_alive<Pos: PosT>(input: &str) -> Alive<Pos> {
     input
         .lines()
         .enumerate()
@@ -17,109 +82,62 @@ fn to_map(input: &str) -> Map {
             row.chars()
                 .enumerate()
                 .filter(|(_, c)| *c == '#')
-                .map(move |(x, _)| (x as i32, y as i32, 0, 0))
+                .map(move |(x, _)| Pos::new(x as i32, y as i32))
         })
         .collect()
 }
 
-fn bounds(map: &Map) -> ((i32, i32), (i32, i32), (i32, i32), (i32, i32)) {
-    let mut x_max = 0;
-    let mut x_min = 0;
-    let mut y_max = 0;
-    let mut y_min = 0;
-    let mut z_max = 0;
-    let mut z_min = 0;
-    let mut w_min = 0;
-    let mut w_max = 0;
-
-    for (x, y, z, w) in map.iter() {
-        x_min = *min(&x_min, x);
-        x_max = *max(&x_max, x);
-        y_min = *min(&y_min, y);
-        y_max = *max(&y_max, y);
-        z_min = *min(&z_min, z);
-        z_max = *max(&z_max, z);
-        w_min = *min(&w_min, w);
-        w_max = *max(&w_max, w);
-    }
-
-    (
-        (x_min - 1, x_max + 1),
-        (y_min - 1, y_max + 1),
-        (z_min - 1, z_max + 1),
-        (w_min - 1, w_max + 1),
-    )
+fn evolve<Pos: PosT>(alive: Alive<Pos>) -> Alive<Pos> {
+    alive_to_neighbors(&alive)
+        .into_iter()
+        .filter_map(|(pos, count)| match count {
+            3 => Some(pos),
+            2 if alive.contains(&pos) => Some(pos),
+            _ => None,
+        })
+        .collect()
 }
 
-fn neighbors(map: &Map, pos: Pos, is_hypercube: bool) -> i32 {
-    let (px, py, pz, pw) = pos;
-
-    let mut count = 0;
-
-    let (w_min, w_max) = if is_hypercube {
-        (pw - 1, pw + 1)
-    } else {
-        (0, 0)
-    };
-
-    for w in w_min..=w_max {
-        for z in (pz - 1)..=(pz + 1) {
-            for y in (py - 1)..=(py + 1) {
-                for x in (px - 1)..=(px + 1) {
-                    if w == pw && z == pz && y == py && x == px {
-                        continue;
-                    }
-                    if map.get(&(x, y, z, w)).is_some() {
-                        count += 1;
-                    }
-                }
-            }
-        }
+fn alive_to_neighbors<Pos: PosT>(alive: &Alive<Pos>) -> NeighborCount<Pos> {
+    let mut hm = HashMap::new();
+    for cell in alive.iter() {
+        cell.add_neighbors(&mut hm);
     }
-
-    count
+    hm
 }
 
-fn evolve(map: &Map, is_hypercube: bool) -> Map {
-    let ((x_min, x_max), (y_min, y_max), (z_min, z_max), (w_min, w_max)) = bounds(map);
-    let (w_min, w_max) = if is_hypercube { (w_min, w_max) } else { (0, 0) };
-
-    let mut newmap = HashSet::new();
-
-    for w in w_min..=w_max {
-        for z in z_min..=z_max {
-            for y in y_min..=y_max {
-                for x in x_min..=x_max {
-                    let count = neighbors(map, (x, y, z, w), is_hypercube);
-                    let active = map.get(&(x, y, z, w)).is_some();
-                    let new_active = match (active, count) {
-                        (true, 2..=3) => true,
-                        (false, 3) => true,
-                        _ => false,
-                    };
-                    if new_active {
-                        newmap.insert((x, y, z, w));
-                    }
-                }
-            }
-        }
+fn eval_part1(inp: &str) -> usize {
+    let mut map: Alive<Pos3> = map_to_alive(&inp);
+    for _ in 0..6 {
+        map = evolve(map);
     }
+    map.len()
+}
 
-    newmap
+fn eval_part2(inp: &str) -> usize {
+    let mut map: Alive<Pos4> = map_to_alive(&inp);
+    for _ in 0..6 {
+        map = evolve(map);
+    }
+    map.len()
 }
 
 fn main() {
     let contents = fs::read_to_string("day17.txt").expect("Something went wrong reading the file");
 
-    let mut map = to_map(&contents);
-    for _ in 0..6 {
-        map = evolve(&map, false);
-    }
-    println!("Part 1: {}", map.len());
+    println!("Part 1: {}", eval_part1(&contents));
+    println!("Part 2: {}", eval_part2(&contents));
+}
 
-    map = to_map(&contents);
-    for _ in 0..6 {
-        map = evolve(&map, true);
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_day17() {
+        let contents =
+            fs::read_to_string("day17.txt").expect("Something went wrong reading the file");
+        assert_eq!(eval_part1(&contents), 382);
+        assert_eq!(eval_part2(&contents), 2552);
     }
-    println!("Part 2: {}", map.len());
 }
