@@ -5,16 +5,12 @@ use std::fs;
 #[derive(Debug, Clone)]
 struct Field {
     name: String,
-    r1_from: i32,
-    r1_to: i32,
-    r2_from: i32,
-    r2_to: i32,
+    ranges: Vec<(i32, i32)>,
 }
 
 impl Field {
     fn contains(&self, n: &i32) -> bool {
-        (self.r1_from..=self.r1_to).contains(n) || // .
-        (self.r2_from..=self.r2_to).contains(n)
+        self.ranges.iter().any(|(s, e)| (s..=e).contains(&n))
     }
 }
 
@@ -26,10 +22,10 @@ fn parse_field(ln: &str) -> Field {
     let r2: Vec<_> = ranges[1].split('-').collect();
     Field {
         name,
-        r1_from: r1[0].parse().unwrap(),
-        r1_to: r1[1].parse().unwrap(),
-        r2_from: r2[0].parse().unwrap(),
-        r2_to: r2[1].parse().unwrap(),
+        ranges: vec![
+            (r1[0].parse().unwrap(), r1[1].parse().unwrap()),
+            (r2[0].parse().unwrap(), r2[1].parse().unwrap()),
+        ],
     }
 }
 
