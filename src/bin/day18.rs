@@ -1,71 +1,100 @@
 use std::fs;
 
+#[derive(Clone, Copy, Eq, PartialEq, Debug)]
+enum Token {
+    Eof,
+    Num(i64),
+    Op(char), // Left and right parens are stored here as operators, just as +*.
+}
+
+struct Lexer {
+    tokens: Vec<Token>,
+}
+
+impl Lexer {
+    fn new(mut inp: &str) -> Lexer {
+        let mut tokens = Vec::new();
+        while let Some(c) = inp.chars().next() {
+            if c.is_ascii_whitespace() {
+                inp = &inp[1..];
+                continue;
+            }
+            if !c.is_digit(10) {
+                tokens.push(Token::Op(c));
+                inp = &inp[1..];
+                continue;
+            }
+
+            let num: String = inp.chars().take_while(|c| c.is_digit(10)).collect();
+            inp = &inp[num.len()..];
+            tokens.push(Token::Num(num.parse::<i64>().unwrap()));
+        }
+
+        tokens.reverse();
+        Lexer { tokens }
+    }
+
+    fn next(&mut self) -> Token {
+        self.tokens.pop().unwrap_or(Token::Eof)
+    }
+
+    fn peek(&self) -> Token {
+        self.tokens.last().copied().unwrap_or(Token::Eof)
+    }
+}
+
 struct P<'a> {
-    inp: &'a str,
+    lexer: Lexer,
     ops: &'a [&'a str],
 }
 
 impl<'a> P<'a> {
-    fn new(inp: &'a str, ops: &'a [&'a str]) -> P<'a> {
-        P { inp, ops }
+    fn new(inp: &str, ops: &'a [&'a str]) -> P<'a> {
+        P {
+            lexer: Lexer::new(inp),
+            ops,
+        }
     }
 
     // digits
     // (expr)
     fn one(&mut self) -> Option<i64> {
-        if self.inp.is_empty() {
-            return None;
-        };
-
-        if self.inp.chars().next() == Some('(') {
-            self.inp = &self.inp[1..];
-            let val = self.expr(0);
-            assert_eq!(self.inp.chars().next(), Some(')'));
-            self.inp = &self.inp[1..];
-            return val;
-        };
-
-        let mut count = 0;
-        let mut num: Vec<char> = Vec::new();
-        for c in self.inp.chars() {
-            if c.is_digit(10) {
-                num.push(c);
-                count += 1;
-            } else {
-                break;
+        match self.lexer.peek() {
+            Token::Op('(') => {
+                self.lexer.next();
+                let expr = self.expr(0);
+                assert_eq!(self.lexer.next(), Token::Op(')'));
+                expr
             }
+            Token::Num(num) => {
+                self.lexer.next();
+                Some(num)
+            }
+            _ => None,
         }
-        assert_ne!(count, 0);
-        self.inp = &self.inp[count..];
-        let s: String = num.into_iter().collect();
-        Some(s.parse::<i64>().unwrap())
     }
 
-    // parse operator at the expected level
+    // Parse operator at the expected level
     fn operator(&mut self, level: usize) -> Option<char> {
-        if self.inp.is_empty() {
-            return None;
-        };
-
-        let op = self.inp.chars().next().unwrap();
-        if !self.ops[level].contains(op) {
-            return None;
+        match self.lexer.peek() {
+            Token::Op(op) if self.ops[level].contains(op) => {
+                self.lexer.next();
+                Some(op)
+            }
+            _ => None,
         }
-
-        self.inp = &self.inp[1..];
-
-        return Some(op);
     }
 
     fn expr(&mut self, level: usize) -> Option<i64> {
         if level == self.ops.len() {
-            // we reached the ende of precedence climbing,
+            // We reached the end of precedence climbing,
             // expect parens or digits with one().
             return self.one();
         }
-        if self.inp.is_empty() {
+        if let Token::Eof = self.lexer.peek() {
             return None;
-        };
+        }
+
         let mut acc = self.expr(level + 1).unwrap();
         while let Some(op) = self.operator(level) {
             let next = self.expr(level + 1).unwrap();
@@ -86,16 +115,14 @@ fn main() {
 }
 
 fn eval_p1(inp: &str) -> i64 {
-    let s: String = inp.chars().filter(|c| *c != ' ').collect();
     let ops = vec!["+*"];
-    let mut p = P::new(&s, &ops);
+    let mut p = P::new(&inp, &ops);
     p.expr(0).unwrap()
 }
 
 fn eval_p2(inp: &str) -> i64 {
-    let s: String = inp.chars().filter(|c| *c != ' ').collect();
     let ops = vec!["*", "+"];
-    let mut p = P::new(&s, &ops);
+    let mut p = P::new(&inp, &ops);
     p.expr(0).unwrap()
 }
 
