@@ -1,27 +1,28 @@
-use std::collections::HashMap;
-
-fn solve(nums: &[i32], requested_index: usize) -> i32 {
-    let mut hm: HashMap<i32, usize> = HashMap::new();
+fn solve(nums: &[usize], requested_index: usize) -> usize {
+    let mut arr = vec![0; 1024];
 
     for (pos, n) in nums.iter().enumerate() {
-        hm.insert(*n, pos + 1);
+        arr[*n] = pos + 1;
     }
 
     let mut prev = 0;
 
     for index in nums.len() + 1..=requested_index - 1 {
-        let next = match hm.get(&prev) {
-            Some(prev_index) => (index - prev_index) as i32,
-            None => 0,
+        while prev >= arr.len() {
+            arr.resize(arr.len() * 2, 0);
+        }
+        let next = match arr[prev] {
+            0 => 0,
+            prev_index => index - prev_index,
         };
-        hm.insert(prev, index);
+        arr[prev] = index;
         prev = next;
     }
     return prev;
 }
 
 fn main() {
-    let nums: Vec<i32> = vec![0, 13, 1, 16, 6, 17];
+    let nums: Vec<usize> = vec![0, 13, 1, 16, 6, 17];
 
     println!("Part 1: {}", solve(&nums, 2020));
     println!("Part 2: {}", solve(&nums, 30000000));
