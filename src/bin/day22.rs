@@ -23,7 +23,7 @@ fn score(deck: &[usize]) -> usize {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day22.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day22.txt").expect("Something went wrong reading the file");
 
     let (player1, player2) = parse_input(&contents).unwrap();
     let winner_part1 = play(player1, player2, false).get_deck();

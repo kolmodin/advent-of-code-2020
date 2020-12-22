@@ -98,7 +98,7 @@ fn floating(val: i64, index: usize, mask: &[u8]) -> Vec<i64> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day14.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day14.txt").expect("Something went wrong reading the file");
 
     let instrs: Vec<_> = contents.lines().map(parse_line).collect();
 

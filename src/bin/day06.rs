@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::fs;
 
 fn main() {
-    let contents = fs::read_to_string("day06.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day06.txt").expect("Something went wrong reading the file");
 
     let sum_anyone: usize = contents
         .split("\n\n")

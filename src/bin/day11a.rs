@@ -75,7 +75,7 @@ fn map_eq(map1: &[Vec<u8>], map2: &[Vec<u8>]) -> bool {
 
 fn main() {
     let contents =
-        fs::read_to_string("day11.txt").expect("Something went wrong reading the file");
+        fs::read_to_string("inputs/day11.txt").expect("Something went wrong reading the file");
 
     let map: Vec<Vec<u8>> = contents.lines().map(|ln| ln.as_bytes().to_vec()).collect();
 

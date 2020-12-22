@@ -78,7 +78,7 @@ mod tests {
     #[test]
     fn test_part1() {
         let contents =
-            fs::read_to_string("day13.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day13.txt").expect("Something went wrong reading the file");
         let (earliest_departure, busses) = parse_input(&contents);
 
         assert_eq!(solve_part1(earliest_departure, &busses), 4938);

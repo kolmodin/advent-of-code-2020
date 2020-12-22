@@ -28,7 +28,7 @@ fn parse_input(path: &str) -> Vec<i32> {
 }
 
 fn main() {
-    let nums = parse_input("day10.txt");
+    let nums = parse_input("inputs/day10.txt");
 
     println!("device adapter {}", solve(nums).unwrap());
 }

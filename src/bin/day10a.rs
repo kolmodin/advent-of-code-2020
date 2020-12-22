@@ -2,7 +2,7 @@ use std::fs;
 
 fn main() {
 
-        let contents = fs::read_to_string("day10.txt").expect("Something went wrong reading the file");
+        let contents = fs::read_to_string("inputs/day10.txt").expect("Something went wrong reading the file");
 
         let mut nums: Vec<i32> = contents.lines().map(|ln| ln.parse::<i32>().unwrap()).collect();
 

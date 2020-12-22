@@ -43,7 +43,7 @@ None
 }
 
 fn main() {
-    let contents = fs::read_to_string("day09.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day09.txt").expect("Something went wrong reading the file");
     let nums: Vec<i64> = contents
         .lines()
         .map(|s| s.parse::<i64>().unwrap())

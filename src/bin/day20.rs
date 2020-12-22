@@ -37,7 +37,7 @@ impl Tile {
         for r in &self.rows {
             println!("{}", r);
         }
-        println!("");
+        println!();
     }
 
     fn rotations(&self) -> Vec<Tile> {
@@ -133,7 +133,7 @@ fn flatten_tiles(tiles: &[Vec<Tile>]) -> Vec<String> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day20.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day20.txt").expect("Something went wrong reading the file");
 
     let tiles: Vec<Tile> = contents.split("\n\n").map(parse_tile).collect();
 

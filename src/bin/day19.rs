@@ -92,7 +92,7 @@ fn update_rules_for_part2(mut rules: Vec<Rule>) -> Vec<Rule> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day19.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day19.txt").expect("Something went wrong reading the file");
     let parts: Vec<&str> = contents.split("\n\n").collect();
 
     let mut rules: Vec<(ID, Rule)> = parts[0].lines().map(parse_rule).collect();

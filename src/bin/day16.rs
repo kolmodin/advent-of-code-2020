@@ -42,7 +42,7 @@ fn is_valid_ticket(ticket: &[i32], fields: &[Field]) -> bool {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day16.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day16.txt").expect("Something went wrong reading the file");
 
     let sections: Vec<_> = contents.split("\n\n").collect();
 

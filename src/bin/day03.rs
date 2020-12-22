@@ -11,7 +11,7 @@ fn run_slope(map: &[&[u8]], right: usize, down: usize) -> usize {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day03.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day03.txt").expect("Something went wrong reading the file");
 
     let lines: Vec<&[u8]> = contents.lines().map(|ln| ln.as_bytes()).collect();
 

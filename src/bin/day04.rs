@@ -61,7 +61,7 @@ fn is_valid(input: &str) -> bool {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day04.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day04.txt").expect("Something went wrong reading the file");
 
     let all_fields: HashSet<_> = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid"]
         .iter()

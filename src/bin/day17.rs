@@ -136,7 +136,7 @@ mod tests {
     #[test]
     fn test_day17() {
         let contents =
-            fs::read_to_string("day17.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day17.txt").expect("Something went wrong reading the file");
         assert_eq!(eval_part1(&contents), 382);
         assert_eq!(eval_part2(&contents), 2552);
     }

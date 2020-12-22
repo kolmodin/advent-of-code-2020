@@ -75,7 +75,7 @@ fn bag_counter<'a>(
 }
 
 fn main() {
-    let contents = fs::read_to_string("day07.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day07.txt").expect("Something went wrong reading the file");
 
     let bags: HashMap<&str,Vec<BagCount>> = contents.lines().map(|ln| parse_line(ln)).collect();
 

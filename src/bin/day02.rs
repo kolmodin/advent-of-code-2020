@@ -57,7 +57,7 @@ fn is_valid2(line: &Line) -> bool {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day02.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day02.txt").expect("Something went wrong reading the file");
 
     let lines: Vec<Line> = contents
         .lines()

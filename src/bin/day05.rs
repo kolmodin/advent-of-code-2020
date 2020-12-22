@@ -37,7 +37,7 @@ fn seat_id(input: &str) -> i32 {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day05.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day05.txt").expect("Something went wrong reading the file");
 
     // seat_id("FBFBBFFRLR");
     // seat_id("BFFFBBFRRR");

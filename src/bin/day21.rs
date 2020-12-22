@@ -19,7 +19,7 @@ fn parse_line(inp: &str) -> Food {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day21.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day21.txt").expect("Something went wrong reading the file");
 
     let foods: Vec<Food> = contents.lines().map(parse_line).collect();
 

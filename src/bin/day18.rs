@@ -109,7 +109,7 @@ impl<'a> P<'a> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day18.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day18.txt").expect("Something went wrong reading the file");
     println!("Part 1: {}", contents.lines().map(eval_p1).sum::<i64>());
     println!("Part 2: {}", contents.lines().map(eval_p2).sum::<i64>());
 }

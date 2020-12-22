@@ -70,7 +70,7 @@ fn one_step(pos: Pos, dir: Direction, i: u8, num: i32) -> (Pos, Direction) {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day12.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day12.txt").expect("Something went wrong reading the file");
 
     let instr: Vec<(u8, i32)> = contents.lines().map(parse_line).collect();
 

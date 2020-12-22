@@ -15,7 +15,7 @@ fn solve(nums: &[i32]) -> Option<(i32, i32, i32)> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day01.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day01.txt").expect("Something went wrong reading the file");
     let nums: Vec<i32> = contents
         .lines()
         .map(|s| s.parse::<i32>().unwrap())
