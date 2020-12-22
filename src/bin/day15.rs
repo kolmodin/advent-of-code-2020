@@ -18,7 +18,7 @@ fn solve(nums: &[usize], requested_index: usize) -> usize {
         arr[prev] = index;
         prev = next;
     }
-    return prev;
+    prev
 }
 
 fn main() {

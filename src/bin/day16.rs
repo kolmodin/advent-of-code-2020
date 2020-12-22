@@ -42,7 +42,8 @@ fn is_valid_ticket(ticket: &[i32], fields: &[Field]) -> bool {
 }
 
 fn main() {
-    let contents = fs::read_to_string("inputs/day16.txt").expect("Something went wrong reading the file");
+    let contents =
+        fs::read_to_string("inputs/day16.txt").expect("Something went wrong reading the file");
 
     let sections: Vec<_> = contents.split("\n\n").collect();
 
@@ -50,8 +51,7 @@ fn main() {
 
     let my_ticket: Vec<i32> = sections[1]
         .lines()
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .split(',')
         .map(|n| n.parse().unwrap())
@@ -97,14 +97,10 @@ fn main() {
                 .cloned()
                 .collect();
             if matches.len() == 1 {
-                let field = matches.pop().unwrap();
-                match field {
-                    Field { name, .. } => {
-                        fields = fields.into_iter().filter(|f| f.name != name).collect();
-                        mapping.insert(name, ticket_row);
-                        seen_rows.insert(ticket_row);
-                    }
-                }
+                let Field { name, .. } = matches.pop().unwrap();
+                fields = fields.into_iter().filter(|f| f.name != name).collect();
+                mapping.insert(name, ticket_row);
+                seen_rows.insert(ticket_row);
             }
         }
     }

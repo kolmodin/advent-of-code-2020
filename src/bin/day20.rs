@@ -54,7 +54,7 @@ impl Tile {
 
 fn rotations(rows: &[String]) -> Vec<Vec<String>> {
     let mut res = vec![];
-    let mut t: Vec<String> = rows.iter().cloned().collect();
+    let mut t: Vec<String> = rows.to_vec();
 
     // top, left, bottom, right
     for _ in 0..4 {
@@ -133,7 +133,8 @@ fn flatten_tiles(tiles: &[Vec<Tile>]) -> Vec<String> {
 }
 
 fn main() {
-    let contents = fs::read_to_string("inputs/day20.txt").expect("Something went wrong reading the file");
+    let contents =
+        fs::read_to_string("inputs/day20.txt").expect("Something went wrong reading the file");
 
     let tiles: Vec<Tile> = contents.split("\n\n").map(parse_tile).collect();
 
@@ -173,7 +174,7 @@ fn main() {
         let mut hm: HashMap<String, Vec<Tile>> = HashMap::new();
         for t in &tiles {
             for t_rot in t.rotations() {
-                let e = hm.entry(t_rot.top()).or_insert(vec![]);
+                let e = hm.entry(t_rot.top()).or_insert_with(Vec::new);
                 e.push(t_rot);
             }
         }
@@ -201,7 +202,7 @@ fn main() {
     let mut seen: HashSet<ID> = HashSet::new();
     let mut puzzle: Vec<Vec<Tile>> = vec![];
 
-    let mut to_left = corner_tile.clone();
+    let mut to_left = corner_tile;
 
     let mut current_row: Vec<Tile> = vec![];
     current_row.push(to_left.clone());
@@ -211,8 +212,7 @@ fn main() {
             .iter()
             .filter(|t| !seen.contains(&t.id))
             .flat_map(|t| t.rotations())
-            .filter(|t| to_left.right() == t.left())
-            .next();
+            .find(|t| to_left.right() == t.left());
 
         if let Some(to_right) = to_right_opt {
             current_row.push(to_right.clone());
@@ -226,7 +226,6 @@ fn main() {
         // looking for top_left.bottom() == new.top()
         println!("tiles in finished row: {}", current_row.len());
         let top_left = current_row.first().cloned().unwrap();
-        let rows_in_tile = top_left.rows.len();
         println!(
             "ids: {:?}",
             current_row.iter().map(|t| t.id).collect::<Vec<_>>()
@@ -238,8 +237,7 @@ fn main() {
             .iter()
             .filter(|t| !seen.contains(&t.id))
             .flat_map(|t| t.rotations())
-            .filter(|t| top_left.bottom() == t.top())
-            .next();
+            .find(|t| top_left.bottom() == t.top());
 
         if let Some(bottom) = bottom_opt {
             seen.insert(bottom.id);

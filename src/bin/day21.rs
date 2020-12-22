@@ -70,7 +70,7 @@ fn main() {
         }
     }
 
-    known_allergens.sort();
+    known_allergens.sort_unstable();
     let part2_list: Vec<_> = known_allergens.into_iter().map(|(_a, i)| i).collect();
     println!("Part 2: {}", part2_list.join(","));
 }

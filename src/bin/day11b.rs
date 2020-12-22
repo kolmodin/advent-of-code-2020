@@ -125,7 +125,7 @@ fn step(xy: &(i32, i32), dir: &(i32, i32)) -> (i32, i32) {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day11.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day11.txt").expect("Something went wrong reading the file");
 
     let map: Vec<Vec<u8>> = contents.lines().map(|ln| ln.as_bytes().to_vec()).collect();
 
