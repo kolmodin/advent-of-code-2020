@@ -1,4 +1,5 @@
 use itertools::iproduct;
+use itertools::Itertools;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fs;
@@ -45,8 +46,7 @@ impl Tile {
             .map(|rows| Tile { id: self.id, rows })
             .collect();
 
-        let mut check: Vec<String> = res.iter().map(|t| t.top()).collect();
-        check.dedup();
+        let check: Vec<String> = res.iter().map(|t| t.top()).unique().collect();
         assert_eq!(check.len(), 8);
         res
     }
