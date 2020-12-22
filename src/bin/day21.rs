@@ -35,13 +35,10 @@ fn main() {
 
     let mut allergen_to_candidate = HashMap::new();
     for allergen in &all_allergens {
-        let food_with_allergen: Vec<HashSet<&str>> = foods
+        let set = foods
             .iter()
             .filter(|f| f.allergens.contains(allergen))
             .map(|f| f.ingredients.iter().cloned().collect::<HashSet<&str>>())
-            .collect();
-        let set = food_with_allergen
-            .into_iter()
             .fold_first(|set, f| set.intersection(&f).cloned().collect())
             .unwrap();
         println!("Found {} {:?}", allergen, set);
@@ -58,24 +55,22 @@ fn main() {
     println!("Part 1: {}", count);
 
     let mut known_allergens: Vec<(&str, &str)> = vec![];
+    let mut known_ingredients = HashSet::new();
 
-    while !allergen_to_candidate.is_empty() {
-        let read = allergen_to_candidate.clone();
-        for (allergen, list) in read {
-            if list.len() == 1 {
-                let ingredient = list.iter().next().unwrap();
+    while known_allergens.len() != allergen_to_candidate.len() {
+        for (allergen, list) in &allergen_to_candidate {
+            if let Some((ingredient,)) = list
+                .iter()
+                .filter(|i| !known_ingredients.contains(i))
+                .collect_tuple()
+            {
                 known_allergens.push((allergen, ingredient));
-                // Remove from all other candidate lists.
-                for mut alg in allergen_to_candidate.values_mut() {
-                    alg.remove(ingredient);
-                }
-                // This allergen is solved, remove it.
-                allergen_to_candidate.remove(allergen);
+                known_ingredients.insert(ingredient);
             }
         }
     }
 
     known_allergens.sort();
-    let part2_list: Vec<_> = known_allergens.into_iter().map(|(a, i)| i).collect();
-    println!("Part 2: {:?}", part2_list.join(","));
+    let part2_list: Vec<_> = known_allergens.into_iter().map(|(_a, i)| i).collect();
+    println!("Part 2: {}", part2_list.join(","));
 }
