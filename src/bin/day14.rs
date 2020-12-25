@@ -113,7 +113,7 @@ mod tests {
     #[test]
     fn test_part1() {
         let contents =
-            fs::read_to_string("day14.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day14.txt").expect("Something went wrong reading the file");
         let instrs: Vec<_> = contents.lines().map(parse_line).collect();
 
         assert_eq!(solve_part1(&instrs), 2346881602152);
@@ -122,7 +122,7 @@ mod tests {
     #[test]
     fn test_part2() {
         let contents =
-            fs::read_to_string("day14.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day14.txt").expect("Something went wrong reading the file");
         let instrs: Vec<_> = contents.lines().map(parse_line).collect();
 
         assert_eq!(solve_part2(&instrs), 3885232834169);

@@ -123,7 +123,7 @@ fn eval_part2(inp: &str) -> usize {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day17.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day17.txt").expect("Something went wrong reading the file");
 
     println!("Part 1: {}", eval_part1(&contents));
     println!("Part 2: {}", eval_part2(&contents));

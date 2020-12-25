@@ -133,13 +133,13 @@ mod tests {
     #[test]
     fn test_day18_part1() {
         let contents =
-            fs::read_to_string("day18.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day18.txt").expect("Something went wrong reading the file");
         assert_eq!(contents.lines().map(eval_p1).sum::<i64>(), 9535936849815);
     }
     #[test]
     fn test_day18_part2() {
         let contents =
-            fs::read_to_string("day18.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day18.txt").expect("Something went wrong reading the file");
         assert_eq!(contents.lines().map(eval_p2).sum::<i64>(), 472171581333710);
     }
 

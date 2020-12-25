@@ -40,7 +40,7 @@ mod tests {
     #[test]
     #[ignore]
     fn test_solve_example() {
-        let nums = parse_input("day10_example.txt");
+        let nums = parse_input("inputs/day10_example.txt");
 
         assert_eq!(solve(nums), Some(19208));
     }
@@ -48,7 +48,7 @@ mod tests {
     #[test]
     #[ignore]
     fn test_solve() {
-        let nums = parse_input("day10.txt");
+        let nums = parse_input("inputs/day10.txt");
 
         assert_eq!(solve(nums), Some(347250213298688));
     }

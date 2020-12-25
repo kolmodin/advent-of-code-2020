@@ -62,7 +62,7 @@ fn solve_part2(busses: &[Bus]) -> usize {
 }
 
 fn main() {
-    let contents = fs::read_to_string("day13.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("inputs/day13.txt").expect("Something went wrong reading the file");
 
     let (earliest_departure, busses) = parse_input(&contents);
 
@@ -87,7 +87,7 @@ mod tests {
     #[test]
     fn test_part2() {
         let contents =
-            fs::read_to_string("day13.txt").expect("Something went wrong reading the file");
+            fs::read_to_string("inputs/day13.txt").expect("Something went wrong reading the file");
         let (_, busses) = parse_input(&contents);
 
         assert_eq!(solve_part2(&busses), 230903629977901);
