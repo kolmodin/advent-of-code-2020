@@ -32,5 +32,6 @@ fn main() {
     let card_loop_size = transform_find_loop(7, card_public_key);
     let encryption_key = transform_steps(door_public_key, card_loop_size);
 
+    println!("card loop size: {}", card_loop_size);
     println!("encryption key: {}", encryption_key);
 }
