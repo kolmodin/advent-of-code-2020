@@ -92,7 +92,7 @@ mod dijkstra_tests {
 
     #[test]
     fn test_dijkstra() {
-        let mut nums = parse_input("day10.txt");
+        let mut nums = parse_input("inputs/day10.txt");
         nums.push(0);
 
         let device = nums.iter().max().unwrap() + 3;
