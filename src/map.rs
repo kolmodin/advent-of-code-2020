@@ -1,37 +1,46 @@
 use crate::pos2d::Pos;
 
+use itertools::iproduct;
 use std::convert::TryFrom;
 use std::str::from_utf8;
 
 #[derive(PartialEq, Eq)]
 pub struct Map {
-    vec: Vec<Vec<u8>>,
+    height: usize,
+    width: usize,
+    data: Vec<u8>,
 }
 
 impl Map {
-    pub fn new(map: Vec<Vec<u8>>) -> Map {
-        Map { vec: map }
+    pub fn new(map: &[Vec<u8>]) -> Map {
+        Map {
+            height: map.len(),
+            width: map[0].len(),
+            data: map.into_iter().cloned().flatten().collect(),
+        }
     }
 
     pub fn new_with_size(map: &Map, cell: u8) -> Map {
         Map {
-            vec: map
-                .vec
-                .iter()
-                .map(|row| row.iter().map(|_| cell).collect())
-                .collect(),
+            height: map.height,
+            width: map.width,
+            data: vec![cell; map.data.len()],
         }
     }
 
     pub fn get(&self, pos: Pos) -> Option<u8> {
         let x = usize::try_from(pos.x).ok()?;
         let y = usize::try_from(pos.y).ok()?;
-        self.vec.get(y).map(|row| row.get(x)).flatten().cloned()
+        if x >= self.width{
+            return None;
+        }
+        self.data.get(y * self.width + x).cloned()
     }
 
     pub fn set(&mut self, pos: Pos, cell: u8) {
-        let row = self.vec.get_mut(pos.y as usize).unwrap();
-        row[pos.x as usize] = cell;
+        let x = usize::try_from(pos.x).expect("Map.set: illegal x coordinate");
+        let y = usize::try_from(pos.y).expect("Map.set: illegal y coordinate");
+        self.data[y * self.width + x] = cell
     }
 
     pub fn repeat_delta_from_start(
@@ -45,7 +54,7 @@ impl Map {
     }
 
     pub fn print(&self) {
-        for row in &self.vec {
+        for row in self.data.chunks(self.width) {
             println!("{}", from_utf8(row).unwrap());
         }
     }
@@ -55,12 +64,10 @@ impl Map {
     }
 
     pub fn iter_pos(&self) -> impl Iterator<Item = Pos> + '_ {
-        let height = self.vec.len() as i32;
-        let width = self.vec[0].len() as i32;
-        (0..height).flat_map(move |y| (0..width).map(move |x| Pos::new(x, y)))
+        iproduct!(0..self.height as i32, 0..self.width as i32).map(|(y, x)| Pos::new(x, y))
     }
 
     pub fn iter_cells(&self) -> impl Iterator<Item = u8> + '_ {
-        self.vec.iter().flat_map(|row| row.iter()).cloned()
+        self.data.iter().cloned()
     }
 }
