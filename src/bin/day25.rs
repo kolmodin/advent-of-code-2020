@@ -18,14 +18,6 @@ fn transform_find_loop(subject_number: usize, final_value: usize) -> usize {
 }
 
 fn main() {
-    assert_eq!(transform_steps(7, 8), 5764801);
-    assert_eq!(transform_steps(7, 11), 17807724);
-    assert_eq!(transform_steps(17807724, 8), 14897079);
-    assert_eq!(transform_steps(5764801, 11), 14897079);
-
-    assert_eq!(transform_find_loop(7, 5764801), 8);
-    assert_eq!(transform_find_loop(7, 17807724), 11);
-
     let card_public_key = 6929599;
     let door_public_key = 2448427;
 
@@ -34,4 +26,19 @@ fn main() {
 
     println!("card loop size: {}", card_loop_size);
     println!("encryption key: {}", encryption_key);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_day25() {
+        assert_eq!(transform_steps(7, 8), 5764801);
+        assert_eq!(transform_steps(7, 11), 17807724);
+        assert_eq!(transform_steps(17807724, 8), 14897079);
+        assert_eq!(transform_steps(5764801, 11), 14897079);
+        assert_eq!(transform_find_loop(7, 5764801), 8);
+        assert_eq!(transform_find_loop(7, 17807724), 11);
+    }
 }
