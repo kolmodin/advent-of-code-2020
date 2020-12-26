@@ -10,3 +10,6 @@ edition = "2018"
 nom = "6.0.1"
 priority-queue = "1.0.3"
 itertools = "0.9.0"
+
+[profile.release]
+debug = 2
