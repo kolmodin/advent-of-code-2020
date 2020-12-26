@@ -1,3 +1,4 @@
+use aoc2020::pos2d::Pos;
 use std::fs;
 
 const N: u8 = b'N';
@@ -10,68 +11,66 @@ const R: u8 = b'R';
 
 const F: u8 = b'F';
 
-type Pos = (i32, i32);
-
 fn parse_line(ln: &str) -> (u8, i32) {
-    println!("{}", ln);
     let num = ln[1..].parse::<i32>().unwrap();
     (ln.as_bytes()[0], num)
 }
 
-fn move_pos(pos: Pos, waypoint: Pos, scale: i32) -> Pos {
-    (pos.0 + waypoint.0 * scale, pos.1 + waypoint.1 * scale)
-}
+fn eval_part1(instrs: &[(u8, i32)]) -> i32 {
+    let mut ship = Pos::origo();
+    let mut dir = Pos::east();
 
-fn rotate(waypoint: Pos, steps: i32, clockwise: i32) -> Pos {
-    let mut x = waypoint.0;
-    let mut y = waypoint.1;
-
-    for _ in 1..=steps {
-        let new_x = y * clockwise;
-        let new_y = -x * clockwise;
-        x = new_x;
-        y = new_y;
+    for (instr, num) in instrs {
+        match *instr {
+            N => ship += Pos::north() * *num,
+            S => ship += Pos::south() * *num,
+            W => ship += Pos::west() * *num,
+            E => ship += Pos::east() * *num,
+            F => ship += dir * *num,
+            R => dir = rotate(dir, num / 90, false),
+            L => dir = rotate(dir, num / 90, true),
+            _ => panic!("unknown instruction {instr}", instr = instr),
+        }
     }
 
-    (x, y)
+    ship.manhattan()
 }
 
-fn one_step(pos: Pos, waypoint: Pos, i: u8, num: i32) -> (Pos, Pos) {
-    let result = match i {
-        N => (pos, move_pos(waypoint, (0, -num), 1)),
-        S => (pos, move_pos(waypoint, (0, num), 1)),
-        W => (pos, move_pos(waypoint, (-num, 0), 1)),
-        E => (pos, move_pos(waypoint, (num, 0), 1)),
-        F => (move_pos(pos, waypoint, num), waypoint),
-        R => (pos, rotate(waypoint, num / 90, -1)),
-        L => (pos, rotate(waypoint, num / 90, 1)),
-        _ => panic!("unknown instruction {instr}", instr = i),
-    };
-    println!("pos={:?} waypoint={:?}", result.0, result.1);
-    result
+fn eval_part2(instrs: &[(u8, i32)]) -> i32 {
+    let mut waypoint = Pos::new(10, -1);
+    let mut ship = Pos::origo();
+
+    for (instr, num) in instrs {
+        match *instr {
+            N => waypoint += Pos::north() * *num,
+            S => waypoint += Pos::south() * *num,
+            W => waypoint += Pos::west() * *num,
+            E => waypoint += Pos::east() * *num,
+            F => ship += waypoint * *num,
+            R => waypoint = rotate(waypoint, num / 90, false),
+            L => waypoint = rotate(waypoint, num / 90, true),
+            _ => panic!("unknown instruction {instr}", instr = instr),
+        }
+    }
+    ship.manhattan()
+}
+
+fn rotate(mut dir: Pos, times: i32, left: bool) -> Pos {
+    for _ in 0..times {
+        if left {
+            dir = dir.rotate_left();
+        } else {
+            dir = dir.rotate_right();
+        }
+    }
+    dir
 }
 
 fn main() {
-    let contents = fs::read_to_string("inputs/day12.txt").expect("Something went wrong reading the file");
-    let instr: Vec<(u8, i32)> = contents.lines().map(parse_line).collect();
+    let contents =
+        fs::read_to_string("inputs/day12.txt").expect("Something went wrong reading the file");
+    let instrs: Vec<(u8, i32)> = contents.lines().map(parse_line).collect();
 
-    let init_waypoint: Pos = (10, -1);
-    let init_pos: (i32, i32) = (0, 0);
-
-    println!("start: pos={:?} waypoint={:?}", init_pos, init_waypoint);
-
-    let init_pos: (i32, i32) = (0, 0);
-
-    let (pos, _) = instr
-        .iter()
-        .fold((init_pos, init_waypoint), |(pos, waypoint), (i, num)| {
-            one_step(pos, waypoint, *i, *num)
-        });
-
-    println!(
-        "{}x{} = manhattan {}",
-        pos.0,
-        pos.1,
-        pos.0.abs() + pos.1.abs()
-    )
+    println!("Part 1: {}", eval_part1(&instrs),);
+    println!("Part 2: {}", eval_part2(&instrs),);
 }
