@@ -1,6 +1,8 @@
 use std::iter::successors;
 use std::ops::Add;
+use std::ops::AddAssign;
 use std::ops::Sub;
+use std::ops::Mul;
 
 #[derive(PartialEq, Eq, Debug, Ord, PartialOrd, Clone, Copy, Hash)]
 pub struct Pos {
@@ -18,6 +20,13 @@ impl Add for Pos {
     }
 }
 
+impl AddAssign for Pos {
+    fn add_assign(&mut self, other: Self) {
+        self.x += other.x;
+        self.y += other.y;
+    }
+}
+
 impl Sub for Pos {
     type Output = Pos;
     fn sub(self, other: Self) -> Self {
@@ -28,12 +37,34 @@ impl Sub for Pos {
     }
 }
 
+impl Mul<i32> for Pos {
+    type Output = Self;
+    fn mul(self, scale: i32) -> Self::Output {
+        Pos {
+            x: self.x * scale,
+            y: self.y * scale,
+        }
+    }
+}
+
 impl Pos {
     pub fn new(x: i32, y: i32) -> Pos {
         Pos { x, y }
     }
     pub fn origo() -> Pos {
         Pos { x: 0, y: 0 }
+    }
+    pub fn north() -> Pos {
+        Pos { x: 0, y: -1 }
+    }
+    pub fn south() -> Pos {
+        Pos { x: 0, y: 1 }
+    }
+    pub fn west() -> Pos {
+        Pos { x: -1, y: 0 }
+    }
+    pub fn east() -> Pos {
+        Pos { x: 1, y: 0 }
     }
 
     pub fn scale(&self, scale: i32) -> Pos {
