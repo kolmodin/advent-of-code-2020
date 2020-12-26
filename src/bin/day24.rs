@@ -166,9 +166,8 @@ fn alive_to_neighbors<Pos: PosT>(alive: &Alive<Pos>) -> NeighborCount<Pos> {
 
 fn eval_part2(inp: &str) -> usize {
     let mut map: Alive<Cube> = map_to_alive(&inp);
-    for i in 0..100 {
+    for _ in 0..100 {
         map = evolve(map);
-        println!("Day {}: {}", i + 1, map.len());
     }
     map.len()
 }
