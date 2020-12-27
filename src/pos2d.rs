@@ -1,8 +1,8 @@
 use std::iter::successors;
 use std::ops::Add;
 use std::ops::AddAssign;
-use std::ops::Sub;
 use std::ops::Mul;
+use std::ops::Sub;
 
 #[derive(PartialEq, Eq, Debug, Ord, PartialOrd, Clone, Copy, Hash)]
 pub struct Pos {
