@@ -17,7 +17,7 @@ fn main() {
                 .len()
         })
         .sum();
-    println!("anyone {}", sum_anyone);
+    println!("Part 1: {}", sum_anyone);
 
     let sum_everyone: usize = contents
         .split("\n\n")
@@ -30,5 +30,5 @@ fn main() {
                 .len()
         })
         .sum();
-    println!("anyone {}", sum_everyone);
+    println!("Part 2: {}", sum_everyone);
 }
