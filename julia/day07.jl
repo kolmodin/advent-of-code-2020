@@ -66,7 +66,7 @@ function part2(bagDict, myBag)
 end
 
 myBag = "shiny gold"
-bags = map(parse_line, lines)
+bags = parse_line.(lines)
 bagDict = Dict{String,Vector{BagCount}}(
     name => contents
     for (name, contents) in bags)
