@@ -38,8 +38,8 @@ fn can_hold_my_bag<'a>(
     memory: &mut HashMap<&'a str, bool>,
     all_bags: &HashMap<&'a str, Vec<BagCount<'a>>>,
 ) -> bool {
-    if *memory.get(some_bag).unwrap_or(&false) {
-        return true;
+    if let Some(&mem) = memory.get(some_bag) {
+        return mem;
     }
     let contents = all_bags.get(some_bag).unwrap();
     for bag_count in contents {
