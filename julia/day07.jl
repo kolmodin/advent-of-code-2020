@@ -7,7 +7,7 @@ struct BagCount
     count::Int64
 end
 
-function parse_line(line::String)::Tuple{String,Array{BagCount,1}}
+function parse_line(line::String)::Tuple{String,Vector{BagCount}}
     ln = rstrip(line, '.')
     parts = split(ln, " bags contain ")
     @assert (length(parts) == 2)
@@ -67,7 +67,7 @@ end
 
 myBag = "shiny gold"
 bags = map(parse_line, lines)
-bagDict = Dict{String,Array{BagCount,1}}(
+bagDict = Dict{String,Vector{BagCount}}(
     name => contents
     for (name, contents) in bags)
 
